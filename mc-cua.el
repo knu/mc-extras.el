@@ -1,4 +1,4 @@
-;;; mc-extras.el --- Extra functions for multiple-cursors mode.
+;;; mc-cua.el --- Make multiple-cursors interact with CUA mode.
 
 ;; Copyright (c) 2013 Akinori MUSHA
 ;;
@@ -27,41 +27,61 @@
 
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/mc-extras.el
-;; Created: 4 Sep 2013
+;; Created: 16 Jul 2013
 ;; Version: 1.0.1.20130904
 ;; Package-Requires: ((multiple-cursors "1.2.1"))
 ;; Keywords: editing, cursors
 
 ;;; Commentary:
 ;;
-;; This package contains extra functions for multiple-cursors mode.
-;;
-;; Here is a list of the interactive commands provided by mc-extras:
-;;
-;; * mc/compare-chars
-;; * mc/compare-chars-backward
-;; * mc/compare-chars-forward
-;; * mc/cua-rectangle-to-multiple-cursors
-;; * mc/remove-current-cursor
-;; * mc/remove-duplicated-cursors
+;; This library contains functions to make multiple-cursors interact
+;; with CUA mode.
 ;;
 ;; Suggested key bindings are as follows:
 ;;
-;;   (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
-;;   (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)
-;;
-;;   (define-key mc/keymap (kbd "C-. =")   'mc/compare-chars)
-;;
 ;;   (define-key cua--rectangle-keymap (kbd "C-. C-,") 'mc/cua-rectangle-to-multiple-cursors)
+
 
 ;;; Code:
 
-(require 'multiple-cursors)
+(require 'cl)
+(require 'multiple-cursors-core)
+(require 'cua-rect)
 
-(require 'mc-compare)
-(require 'mc-cua)
-(require 'mc-remove)
+;;;###autoload
+(defun mc/cua-rectangle-to-multiple-cursors ()
+  "Turn CUA rectangle mode into multiple-cursors mode, keeping insert positions and selections."
+  (interactive)
+  (let ((right (cua--rectangle-right-side))
+        rows)
+    (cua--rectangle-operation
+        'clear nil t nil nil
+        (lambda (s e _l _r)
+          (setq rows
+                (append rows
+                        (list (cons (+ 0 s) (+ 0 e)))))))
+    (cua--cancel-rectangle)
+    (if rows
+        (let ((mark-row `(lambda (row)
+                           ,@(if right
+                                 '((push-mark (car row))
+                                   (goto-char (cdr row)))
+                               '((push-mark (cdr row))
+                                 (goto-char (car row))))
+                           (setq transient-mark-mode (cons 'only transient-mark-mode))
+                           (activate-mark)
+                           (setq deactivate-mark nil)))
+              (top (car rows))
+              (rest (cdr rows)))
+          (loop for row in rest do
+                (mc/save-excursion
+                 (funcall mark-row row)
+                 (mc/create-fake-cursor-at-point)))
+          (funcall mark-row top)
+          (mc/maybe-multiple-cursors-mode)))))
 
-(provide 'mc-extras)
+(add-to-list 'mc--default-cmds-to-run-once 'mc/cua-rectangle-to-multiple-cursors)
 
-;;; mc-extras.el ends here
+(provide 'mc-cua)
+
+;;; mc-cua.el ends here
