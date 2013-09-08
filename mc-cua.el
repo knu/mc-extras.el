@@ -28,7 +28,7 @@
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/mc-extras.el
 ;; Created: 16 Jul 2013
-;; Version: 1.0.1.20130904
+;; Version: 1.0.2.20130909
 ;; Package-Requires: ((multiple-cursors "1.2.1"))
 ;; Keywords: editing, cursors
 
@@ -81,6 +81,67 @@
           (mc/maybe-multiple-cursors-mode)))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/cua-rectangle-to-multiple-cursors)
+
+;;
+;; Build a CUA rectangle from entries copied with multiple cursors.
+;;
+
+(defadvice mc--maybe-set-killed-rectangle
+  (around mc/cua-set-last-killed-rectangle)
+  "Set `cua--last-killed-rectangle' as well as `killed-rectangle'."
+  (if (boundp 'cua--last-killed-rectangle)
+      (let ((orig-entries killed-rectangle))
+        ad-do-it
+        (when (not (eq orig-entries killed-rectangle))
+          (setq cua--last-killed-rectangle
+                (cons (car kill-ring) killed-rectangle))))
+    ad-do-it))
+
+;;
+;; Let each of multiple cursors paste the corresponding line of the
+;; last killed rectangle.
+;;
+
+(defvar mc/cua-saved-kill-ring nil)
+
+(defadvice current-kill
+  (before mc/cua-remember-kill-ring)
+  "Remember `kill-ring' before interprogram-paste."
+  (setq mc/cua-saved-kill-ring kill-ring))
+
+(defadvice current-kill
+  (after mc/cua-clear-last-killed-rectangle-on-interprogram-paste)
+  "Clear `cua--last-killed-rectangle' on interprogram paste."
+  (and (= n 0)
+       interprogram-paste-function
+       (boundp 'cua--last-killed-rectangle)
+       cua--last-killed-rectangle
+       (not (eq mc/cua-saved-kill-ring kill-ring))
+       (setq cua--last-killed-rectangle nil))
+  (setq mc/cua-saved-kill-ring nil))
+
+(defadvice cua-paste
+  (before mc/cua-divide-rectangle-into-lines)
+  "Let each of multiple cursors paste the corresponding line of the last killed rectangle."
+  (and (null arg)       ;; Currently no support for register 0-9.
+       (current-kill 0) ;; Take interprogram paste into account.
+       cua--last-killed-rectangle
+       multiple-cursors-mode
+       (let ((rect (cdr cua--last-killed-rectangle)))
+         (mc/for-each-cursor-ordered
+          (let ((kill-ring (overlay-get cursor 'kill-ring))
+                (kill-ring-yank-pointer (overlay-get cursor 'kill-ring-yank-pointer)))
+            (kill-new (or (pop rect) ""))
+            (overlay-put cursor 'kill-ring kill-ring)
+            (overlay-put cursor 'kill-ring-yank-pointer kill-ring-yank-pointer)))
+         (setq cua--last-killed-rectangle nil))))
+
+;;;###autoload
+(defun mc/cua-rectangle-setup ()
+  "Enable interaction between multiple cursors and CUA rectangle copy & paste."
+  (ad-activate 'mc--maybe-set-killed-rectangle)
+  (ad-activate 'current-kill)
+  (ad-activate 'cua-paste))
 
 (provide 'mc-cua)
 
