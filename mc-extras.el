@@ -53,6 +53,11 @@
 ;;   (define-key mc/keymap (kbd "C-. =")   'mc/compare-chars)
 ;;
 ;;   (define-key cua--rectangle-keymap (kbd "C-. C-,") 'mc/cua-rectangle-to-multiple-cursors)
+;;
+;; To enable interaction between multiple cursors and CUA rectangle
+;; copy & paste:
+;;
+;;   (mc/cua-rectangle-setup)
 
 ;;; Code:
 
