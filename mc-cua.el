@@ -129,7 +129,8 @@
   (before mc/cua-divide-rectangle-into-lines)
   "Let each of multiple cursors paste the corresponding line of the last killed rectangle."
   (and (null arg)       ;; Currently no support for register 0-9.
-       (current-kill 0) ;; Take interprogram paste into account.
+       (or (null kill-ring)
+           (current-kill 0)) ;; Take interprogram paste into account.
        cua--last-killed-rectangle
        multiple-cursors-mode
        (let ((rect (cdr cua--last-killed-rectangle)))
