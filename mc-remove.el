@@ -1,6 +1,6 @@
 ;;; mc-remove.el --- Functions to remove cursors in multiple-cursors mode.
 
-;; Copyright (c) 2013 Akinori MUSHA
+;; Copyright (c) 2013-2015 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -57,8 +57,7 @@
     (mapc 'mc/remove-fake-cursor
           (remove-if-not 'mc/fake-cursor-p
                          (overlays-at (point))))
-    (mc/pop-state-from-overlay next-cursor)
-    (recenter)))
+    (mc/pop-state-from-overlay next-cursor)))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/remove-current-cursor)
 
