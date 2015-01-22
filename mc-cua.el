@@ -28,7 +28,6 @@
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/mc-extras.el
 ;; Created: 16 Jul 2013
-;; Version: 1.0.3.20130909
 ;; Package-Requires: ((multiple-cursors "1.2.1"))
 ;; Keywords: editing, cursors
 
