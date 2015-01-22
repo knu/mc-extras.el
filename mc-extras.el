@@ -1,6 +1,6 @@
 ;;; mc-extras.el --- Extra functions for multiple-cursors mode.
 
-;; Copyright (c) 2013 Akinori MUSHA
+;; Copyright (c) 2013-2015 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -42,6 +42,7 @@
 ;; * mc/compare-chars-backward
 ;; * mc/compare-chars-forward
 ;; * mc/cua-rectangle-to-multiple-cursors
+;; * mc/rect-rectangle-to-multiple-cursors
 ;; * mc/remove-current-cursor
 ;; * mc/remove-duplicated-cursors
 ;;
@@ -52,7 +53,10 @@
 ;;
 ;;   (define-key mc/keymap (kbd "C-. =")   'mc/compare-chars)
 ;;
-;;   (define-key cua--rectangle-keymap (kbd "C-. C-,") 'mc/cua-rectangle-to-multiple-cursors)
+;;   ;; Emacs 24.4+ comes with rectangle-mark-mode.
+;;   (define-key rectangle-mark-mode-map (kbd "C-. C-,") 'mc/rect-rectangle-to-multiple-cursors)
+;;
+;;   (define-key cua--rectangle-keymap   (kbd "C-. C-,") 'mc/cua-rectangle-to-multiple-cursors)
 ;;
 ;; To enable interaction between multiple cursors and CUA rectangle
 ;; copy & paste:
@@ -65,6 +69,8 @@
 
 (require 'mc-compare)
 (require 'mc-cua)
+(if (featurep 'rectangle-mark-mode)
+    (require 'mc-rect))
 (require 'mc-remove)
 
 (provide 'mc-extras)
