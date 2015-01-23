@@ -50,5 +50,5 @@ Copyright (c) 2013-2015 Akinori MUSHA.
 Licensed under the 2-clause BSD license.  See `LICENSE.txt` for
 details.
 
-Visit [GitHub Repository](https://github.com/knu/emacsc) for the
+Visit [GitHub Repository](https://github.com/knu/mc-extras.el) for the
 latest information.
