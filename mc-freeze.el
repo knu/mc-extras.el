@@ -66,6 +66,7 @@
      (overlay-put ov 'face 'mc/cursor-face)
      (add-to-list 'mc-freeze--frozen-cursors ov))))
 
+;;;###autoload
 (defun mc/freeze-fake-cursors (&optional arg)
   "Freeze fake cursors for later reactivation.
 
@@ -85,6 +86,7 @@ point before freezing fake cursors."
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/freeze-fake-cursors)
 
+;;;###autoload
 (defun mc/unfreeze-fake-cursors ()
   "Unfreeze frozen fake cursors."
   (interactive)
@@ -105,6 +107,7 @@ point before freezing fake cursors."
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/unfreeze-fake-cursors)
 
+;;;###autoload
 (defun mc/freeze-fake-cursors-dwim (&optional arg)
   "Freeze or unfreeze fake cursors depending on the current state.
 
