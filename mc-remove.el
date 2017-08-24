@@ -39,6 +39,7 @@
 ;; Suggested key bindings are as follows:
 ;;
 ;;   (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
+;;   (define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)
 ;;   (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)
 
 ;;; Code:
@@ -76,6 +77,20 @@
                 nil))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/remove-duplicated-cursors)
+
+;;;###autoload
+(defun mc/remove-cursors-at-eol ()
+  "Remove cursors at EOL, either fake or real."
+  (interactive)
+  (loop for cursor in (mc/all-fake-cursors)
+        for start = (overlay-start cursor)
+        do (if (save-excursion (goto-char start) (eolp))
+               (mc/remove-fake-cursor cursor)))
+  (if (eolp)
+      (ignore-errors
+        (mc/remove-current-cursor))))
+
+(add-to-list 'mc--default-cmds-to-run-once 'mc/remove-cursors-at-eol)
 
 (provide 'mc-remove)
 

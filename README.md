@@ -15,6 +15,7 @@ Here is a list of the interactive commands provided by mc-extras:
 * mc/freeze-fake-cursors-dwim
 * mc/rect-rectangle-to-multiple-cursors
 * mc/remove-current-cursor
+* mc/remove-cursors-at-eol
 * mc/remove-duplicated-cursors
 
 ## Installation
@@ -27,6 +28,7 @@ Suggested key bindings are as follows:
 
 ```elisp
 (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
+(define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)
 (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)
 
 (define-key mc/keymap (kbd "C-. C-.") 'mc/freeze-fake-cursors-dwim)
@@ -48,7 +50,7 @@ To enable interaction between multiple cursors and CUA rectangle copy
 
 ## Author
 
-Copyright (c) 2013-2015 Akinori MUSHA.
+Copyright (c) 2013-2017 Akinori MUSHA.
 
 Licensed under the 2-clause BSD license.  See `LICENSE.txt` for
 details.
