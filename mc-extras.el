@@ -1,6 +1,6 @@
 ;;; mc-extras.el --- Extra functions for multiple-cursors mode.
 
-;; Copyright (c) 2013-2015 Akinori MUSHA
+;; Copyright (c) 2013-2017 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -28,7 +28,7 @@
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/mc-extras.el
 ;; Created: 4 Sep 2013
-;; Version: 1.2.1
+;; Version: 1.2.2
 ;; Package-Requires: ((multiple-cursors "1.2.1"))
 ;; Keywords: editing, cursors
 
@@ -44,11 +44,13 @@
 ;; * mc/cua-rectangle-to-multiple-cursors
 ;; * mc/rect-rectangle-to-multiple-cursors
 ;; * mc/remove-current-cursor
+;; * mc/remove-cursors-at-eol
 ;; * mc/remove-duplicated-cursors
 ;;
 ;; Suggested key bindings are as follows:
 ;;
 ;;   (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
+;;   (define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)
 ;;   (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)
 ;;
 ;;   (define-key mc/keymap (kbd "C-. =")   'mc/compare-chars)
