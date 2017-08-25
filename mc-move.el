@@ -1,6 +1,6 @@
-;;; mc-compare.el --- Compare texts in multiple-cursors mode.
+;;; mc-move.el --- Functions to move cursors in multiple-cursors mode.
 
-;; Copyright (c) 2013 Akinori MUSHA
+;; Copyright (c) 2013-2017 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -33,17 +33,28 @@
 
 ;;; Commentary:
 ;;
-;; This library contains functions to compare texts in
-;; multiple-cursors mode.
+;; This library contains functions to move cursors in multiple-cursors
+;; mode.
 ;;
 ;; Suggested key bindings are as follows:
 ;;
+;;   (define-key mc/keymap (kbd "C-. .") 'mc/move-to-column)
 ;;   (define-key mc/keymap (kbd "C-. =") 'mc/compare-chars)
 
 ;;; Code:
 
 (require 'cl)
 (require 'multiple-cursors-core)
+
+;;;###autoload
+(defun mc/move-to-column (column)
+  "Move every cursor to column COLUMN.
+If COLUMN is omitted, move every fake cursor to the same column as the real cursor."
+  (interactive "p")
+  (let ((current-prefix-arg (or column (current-column))))
+    (mc/execute-command-for-all-fake-cursors 'move-to-column)))
+
+(add-to-list 'mc--default-cmds-to-run-once 'mc/move-to-column)
 
 ;;;###autoload
 (defun mc/compare-chars (&optional arg)
@@ -83,6 +94,6 @@ This command pushes the mark before moving cursors."
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/compare-chars-backward)
 
-(provide 'mc-compare)
+(provide 'mc-move)
 
-;;; mc-compare.el ends here
+;;; mc-move.el ends here

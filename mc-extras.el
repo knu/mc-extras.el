@@ -44,6 +44,7 @@
 ;; * mc/cua-rectangle-to-multiple-cursors
 ;; * mc/mark-next-sexps
 ;; * mc/mark-previous-sexps
+;; * mc/move-to-column
 ;; * mc/rect-rectangle-to-multiple-cursors
 ;; * mc/remove-current-cursor
 ;; * mc/remove-cursors-at-eol
@@ -60,6 +61,7 @@
 ;;   (define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)
 ;;   (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)
 ;;
+;;   (define-key mc/keymap (kbd "C-. .")   'mc/move-to-column)
 ;;   (define-key mc/keymap (kbd "C-. =")   'mc/compare-chars)
 ;;
 ;;   ;; Emacs 24.4+ comes with rectangle-mark-mode.
@@ -77,11 +79,11 @@
 (require 'multiple-cursors)
 
 (require 'mc-mark-extras)
-(require 'mc-compare)
+(require 'mc-move)
+(require 'mc-remove)
 (require 'mc-cua)
 (if (featurep 'rectangle-mark-mode)
     (require 'mc-rect))
-(require 'mc-remove)
 
 (provide 'mc-extras)
 

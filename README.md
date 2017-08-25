@@ -15,6 +15,7 @@ Here is a list of the interactive commands provided by mc-extras:
 * mc/freeze-fake-cursors-dwim
 * mc/mark-next-sexps
 * mc/mark-previous-sexps
+* mc/move-to-column
 * mc/rect-rectangle-to-multiple-cursors
 * mc/remove-current-cursor
 * mc/remove-cursors-at-eol
@@ -40,6 +41,7 @@ Suggested key bindings are as follows:
 
 (define-key mc/keymap (kbd "C-. C-.") 'mc/freeze-fake-cursors-dwim)
 
+(define-key mc/keymap (kbd "C-. .")   'mc/move-to-column)
 (define-key mc/keymap (kbd "C-. =")   'mc/compare-chars)
 
 ;; Emacs 24.4+ comes with rectangle-mark-mode.
