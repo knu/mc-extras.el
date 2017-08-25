@@ -13,6 +13,8 @@ Here is a list of the interactive commands provided by mc-extras:
 * mc/compare-chars-forward
 * mc/cua-rectangle-to-multiple-cursors
 * mc/freeze-fake-cursors-dwim
+* mc/mark-next-sexps
+* mc/mark-previous-sexps
 * mc/rect-rectangle-to-multiple-cursors
 * mc/remove-current-cursor
 * mc/remove-cursors-at-eol
@@ -27,6 +29,9 @@ This package is available on [MELPA](http://melpa.org/).
 Suggested key bindings are as follows:
 
 ```elisp
+(define-key mc/keymap (kbd "C-. M-C-f") 'mc/mark-next-sexps)
+(define-key mc/keymap (kbd "C-. M-C-b") 'mc/mark-previous-sexps)
+
 (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
 (define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)
 (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)

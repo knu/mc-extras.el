@@ -1,6 +1,6 @@
-;;; mc-extras.el --- Extra functions for multiple-cursors mode.
+;;; mc-mark-extras.el --- Functions to mark adjacent sexps.
 
-;; Copyright (c) 2013-2017 Akinori MUSHA
+;; Copyright (c) 2017 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -27,60 +27,57 @@
 
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/mc-extras.el
-;; Created: 4 Sep 2013
-;; Version: 1.2.2
+;; Created: 25 Aug 2017
 ;; Package-Requires: ((multiple-cursors "1.2.1"))
 ;; Keywords: editing, cursors
 
 ;;; Commentary:
 ;;
-;; This package contains extra functions for multiple-cursors mode.
-;;
-;; Here is a list of the interactive commands provided by mc-extras:
-;;
-;; * mc/compare-chars
-;; * mc/compare-chars-backward
-;; * mc/compare-chars-forward
-;; * mc/cua-rectangle-to-multiple-cursors
-;; * mc/mark-next-sexps
-;; * mc/mark-previous-sexps
-;; * mc/rect-rectangle-to-multiple-cursors
-;; * mc/remove-current-cursor
-;; * mc/remove-cursors-at-eol
-;; * mc/remove-duplicated-cursors
+;; This library contains functions to mark sexps in multiple-cursors
+;; mode.
 ;;
 ;; Suggested key bindings are as follows:
 ;;
 ;;   (define-key mc/keymap (kbd "C-. M-C-f") 'mc/mark-next-sexps)
 ;;   (define-key mc/keymap (kbd "C-. M-C-b") 'mc/mark-previous-sexps)
-;;
-;;   (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
-;;   (define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)
-;;   (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)
-;;
-;;   (define-key mc/keymap (kbd "C-. =")   'mc/compare-chars)
-;;
-;;   ;; Emacs 24.4+ comes with rectangle-mark-mode.
-;;   (define-key rectangle-mark-mode-map (kbd "C-. C-,") 'mc/rect-rectangle-to-multiple-cursors)
-;;
-;;   (define-key cua--rectangle-keymap   (kbd "C-. C-,") 'mc/cua-rectangle-to-multiple-cursors)
-;;
-;; To enable interaction between multiple cursors and CUA rectangle
-;; copy & paste:
-;;
-;;   (mc/cua-rectangle-setup)
 
 ;;; Code:
 
-(require 'multiple-cursors)
+(require 'cl)
+(require 'multiple-cursors-core)
 
-(require 'mc-mark-extras)
-(require 'mc-compare)
-(require 'mc-cua)
-(if (featurep 'rectangle-mark-mode)
-    (require 'mc-rect))
-(require 'mc-remove)
+(defun mc/mark-sexps (num-sexps direction)
+  (dotimes (i (if (= num-sexps 0) 1 num-sexps))
+    (mc/save-excursion
+     (let ((furthest-cursor (cl-ecase direction
+                              (forwards  (mc/furthest-cursor-after-point))
+                              (backwards (mc/furthest-cursor-before-point)))))
+       (when (overlayp furthest-cursor)
+         (goto-char (overlay-get furthest-cursor 'point))
+         (when (= num-sexps 0)
+           (mc/remove-fake-cursor furthest-cursor))))
+     (cl-ecase direction
+       (forwards (forward-sexp 2) (backward-sexp 1))
+       (backwards (backward-sexp 2) (forward-sexp 1)))
+     (mc/create-fake-cursor-at-point))))
 
-(provide 'mc-extras)
+;;;###autoload
+(defun mc/mark-next-sexps (arg)
+  "Mark next ARG sexps."
+  (interactive "p")
+  (mc/mark-sexps arg 'forwards)
+  (mc/maybe-multiple-cursors-mode))
+(add-to-list 'mc--default-cmds-to-run-once 'mc/mark-next-sexps)
 
-;;; mc-extras.el ends here
+;;;###autoload
+(defun mc/mark-previous-sexps (arg)
+  "Mark previous ARG sexps."
+  (interactive "p")
+  (mc/mark-sexps arg 'backwards)
+  (mc/maybe-multiple-cursors-mode))
+
+(add-to-list 'mc--default-cmds-to-run-once 'mc/mark-previous-sexps)
+
+(provide 'mc-mark-extras)
+
+;;; mc-mark-extras.el ends here
