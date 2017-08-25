@@ -31,6 +31,8 @@ Suggested key bindings are as follows:
 ```elisp
 (define-key mc/keymap (kbd "C-. M-C-f") 'mc/mark-next-sexps)
 (define-key mc/keymap (kbd "C-. M-C-b") 'mc/mark-previous-sexps)
+(define-key mc/keymap (kbd "C-. <") 'mc/mark-all-above)
+(define-key mc/keymap (kbd "C-. >") 'mc/mark-all-below)
 
 (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
 (define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)

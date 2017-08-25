@@ -40,6 +40,8 @@
 ;;
 ;;   (define-key mc/keymap (kbd "C-. M-C-f") 'mc/mark-next-sexps)
 ;;   (define-key mc/keymap (kbd "C-. M-C-b") 'mc/mark-previous-sexps)
+;;   (define-key mc/keymap (kbd "C-. <") 'mc/mark-all-above)
+;;   (define-key mc/keymap (kbd "C-. >") 'mc/mark-all-below)
 
 ;;; Code:
 
@@ -77,6 +79,38 @@
   (mc/maybe-multiple-cursors-mode))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/mark-previous-sexps)
+
+;;;###autoload
+(defun mc/mark-all-below ()
+  "Mark lines below until the cursor hits a line shorter than the current column position."
+  (interactive)
+  (save-excursion
+    (let ((col (current-column)))
+      (loop while (and (zerop (forward-line 1))
+                       (not (eobp))
+                       (= (move-to-column col) col)
+                       (not (and (zerop col)
+                                 (eolp))))
+            do (mc/create-fake-cursor-at-point))
+      (mc/maybe-multiple-cursors-mode))))
+
+(add-to-list 'mc--default-cmds-to-run-once 'mc/mark-all-below)
+
+;;;###autoload
+(defun mc/mark-all-above ()
+  "Mark lines above until the cursor hits a line shorter than the current column position."
+  (interactive)
+  (save-excursion
+    (let ((col (current-column)))
+      (loop while (and (zerop (forward-line -1))
+                       (not (bobp))
+                       (= (move-to-column col) col)
+                       (not (and (zerop col)
+                                 (eolp))))
+            do (mc/create-fake-cursor-at-point))
+      (mc/maybe-multiple-cursors-mode))))
+
+(add-to-list 'mc--default-cmds-to-run-once 'mc/mark-all-above)
 
 (provide 'mc-mark-extras)
 
