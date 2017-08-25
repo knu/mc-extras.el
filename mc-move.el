@@ -50,9 +50,9 @@
 (defun mc/move-to-column (column)
   "Move every cursor to column COLUMN.
 If COLUMN is omitted, move every fake cursor to the same column as the real cursor."
-  (interactive "p")
-  (let ((current-prefix-arg (or column (current-column))))
-    (mc/execute-command-for-all-fake-cursors 'move-to-column)))
+  (interactive "P")
+  (let ((current-prefix-arg (if column (prefix-numeric-value column) (current-column))))
+    (mc/execute-command-for-all-cursors 'move-to-column)))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/move-to-column)
 
