@@ -1,6 +1,6 @@
 ;;; mc-remove.el --- Functions to remove cursors in multiple-cursors mode.
 
-;; Copyright (c) 2013-2015 Akinori MUSHA
+;; Copyright (c) 2013-2017 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
