@@ -20,6 +20,7 @@ Here is a list of the interactive commands provided by mc-extras:
 * mc/remove-current-cursor
 * mc/remove-cursors-at-eol
 * mc/remove-duplicated-cursors
+* mc/remove-cursors-in-blanklines
 
 ## Installation
 
