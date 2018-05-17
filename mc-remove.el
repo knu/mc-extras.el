@@ -101,7 +101,8 @@
         do (if (save-excursion (goto-char start) (and (looking-at "\\s-*$")
                                                       (looking-back "^\\s-*")))
                (mc/remove-fake-cursor cursor)))
-  (if (eolp)
+  (if ((and (looking-at "\\s-*$")
+            (looking-back "^\\s-*"))
       (ignore-errors
         (mc/remove-current-cursor))))
 
