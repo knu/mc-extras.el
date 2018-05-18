@@ -20,7 +20,7 @@ Here is a list of the interactive commands provided by mc-extras:
 * mc/remove-current-cursor
 * mc/remove-cursors-at-eol
 * mc/remove-duplicated-cursors
-* mc/remove-cursors-in-blanklines
+* mc/remove-cursors-on-blank-lines
 
 ## Installation
 
@@ -39,6 +39,7 @@ Suggested key bindings are as follows:
 (define-key mc/keymap (kbd "C-. C-d") 'mc/remove-current-cursor)
 (define-key mc/keymap (kbd "C-. C-k") 'mc/remove-cursors-at-eol)
 (define-key mc/keymap (kbd "C-. d")   'mc/remove-duplicated-cursors)
+(define-key mc/keymap (kbd "C-. C-o") 'mc/remove-cursors-on-blank-lines)
 
 (define-key mc/keymap (kbd "C-. C-.") 'mc/freeze-fake-cursors-dwim)
 

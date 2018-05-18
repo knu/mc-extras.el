@@ -93,8 +93,8 @@
 (add-to-list 'mc--default-cmds-to-run-once 'mc/remove-cursors-at-eol)
 
 ;;;###autoload
-(defun mc/remove-cursors-in-blanklines()
-  "Remove cursors in blank lines, either fake or real."
+(defun mc/remove-cursors-on-blank-lines ()
+  "Remove cursors on blank lines, either fake or real."
   (interactive)
   (loop for cursor in (mc/all-fake-cursors)
         for start = (overlay-start cursor)
@@ -106,7 +106,7 @@
       (ignore-errors
         (mc/remove-current-cursor))))
 
-(add-to-list 'mc--default-cmds-to-run-once 'mc/remove-cursors-in-blanklines)
+(add-to-list 'mc--default-cmds-to-run-once 'mc/remove-cursors-on-blank-lines)
 
 (provide 'mc-remove)
 
