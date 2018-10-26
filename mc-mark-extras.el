@@ -47,6 +47,7 @@
 
 (require 'cl)
 (require 'multiple-cursors-core)
+(require 'mc-mark-more)
 
 (defun mc/mark-sexps (num-sexps direction)
   (dotimes (i (if (= num-sexps 0) 1 num-sexps))
