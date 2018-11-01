@@ -46,6 +46,7 @@
 
 (require 'cl)
 (require 'multiple-cursors-core)
+(require 'mc-cycle-cursors)
 
 ;;;###autoload
 (defun mc/remove-current-cursor ()
