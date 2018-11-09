@@ -80,6 +80,18 @@
 (add-to-list 'mc--default-cmds-to-run-once 'mc/remove-duplicated-cursors)
 
 ;;;###autoload
+(defun mc/remove-cursors-at-bol ()
+  "Remove cursors at BOL, either fake or real."
+  (interactive)
+  (loop for cursor in (mc/all-fake-cursors)
+        for start = (overlay-start cursor)
+        do (if (save-excursion (goto-char start) (bolp))
+               (mc/remove-fake-cursor cursor)))
+  (if (bolp)
+      (ignore-errors
+        (mc/remove-current-cursor))))
+
+;;;###autoload
 (defun mc/remove-cursors-at-eol ()
   "Remove cursors at EOL, either fake or real."
   (interactive)
