@@ -1,6 +1,6 @@
 ;;; mc-rect.el --- Make multiple-cursors interact with rectangle selection.
 
-;; Copyright (c) 2015 Akinori MUSHA
+;; Copyright (c) 2015-2023 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -76,6 +76,8 @@
            (funcall mark-row startcol endcol)
            (mc/create-fake-cursor-at-point))))
      start end)
+    (if (bound-and-true-p rectangle-mark-mode) (rectangle-mark-mode -1))
+    (if (bound-and-true-p cua-rectangle-mark-mode) (cua-rectangle-mark-mode -1))
     (mc/maybe-multiple-cursors-mode)))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/rect-rectangle-to-multiple-cursors)
