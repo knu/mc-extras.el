@@ -1,6 +1,6 @@
 ;;; mc-extras.el --- Extra functions for multiple-cursors mode.
 
-;; Copyright (c) 2013-2017 Akinori MUSHA
+;; Copyright (c) 2013-2023 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -28,7 +28,7 @@
 ;; Author: Akinori MUSHA <knu@iDaemons.org>
 ;; URL: https://github.com/knu/mc-extras.el
 ;; Created: 4 Sep 2013
-;; Version: 1.2.4
+;; Version: 1.3.0
 ;; Package-Requires: ((multiple-cursors "1.2.1"))
 ;; Keywords: editing, cursors
 
