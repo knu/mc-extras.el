@@ -1,6 +1,6 @@
 ;;; mc-mark-extras.el --- Functions to mark adjacent sexps.
 
-;; Copyright (c) 2017 Akinori MUSHA
+;; Copyright (c) 2017-2023 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -45,7 +45,8 @@
 
 ;;; Code:
 
-(require 'cl)
+(eval-when-compile
+  (require 'cl-lib))
 (require 'multiple-cursors-core)
 (require 'mc-mark-more)
 
@@ -87,12 +88,12 @@
   (interactive)
   (save-excursion
     (let ((col (current-column)))
-      (loop while (and (zerop (forward-line 1))
-                       (not (eobp))
-                       (= (move-to-column col) col)
-                       (not (and (zerop col)
-                                 (eolp))))
-            do (mc/create-fake-cursor-at-point))
+      (while (and (zerop (forward-line 1))
+                  (not (eobp))
+                  (= (move-to-column col) col)
+                  (not (and (zerop col)
+                            (eolp))))
+        (mc/create-fake-cursor-at-point))
       (mc/maybe-multiple-cursors-mode))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/mark-all-below)
@@ -103,12 +104,12 @@
   (interactive)
   (save-excursion
     (let ((col (current-column)))
-      (loop while (and (zerop (forward-line -1))
-                       (not (bobp))
-                       (= (move-to-column col) col)
-                       (not (and (zerop col)
-                                 (eolp))))
-            do (mc/create-fake-cursor-at-point))
+      (while (and (zerop (forward-line -1))
+                  (not (bobp))
+                  (= (move-to-column col) col)
+                  (not (and (zerop col)
+                            (eolp))))
+        (mc/create-fake-cursor-at-point))
       (mc/maybe-multiple-cursors-mode))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/mark-all-above)

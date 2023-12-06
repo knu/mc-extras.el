@@ -1,6 +1,6 @@
 ;;; mc-freeze.el --- Freeze and unfreeze fake cursors in multiple-cursors mode.
 
-;; Copyright (c) 2015 Akinori MUSHA
+;; Copyright (c) 2015-2023 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -44,7 +44,7 @@
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl))
+  (require 'cl-lib))
 (require 'multiple-cursors-core)
 
 (defvar mc-freeze--frozen-cursors nil
@@ -55,8 +55,8 @@
   (eq (overlay-get ov 'type) 'mc-freeze--frozen-cursor))
 
 (defun mc-freeze--frozen-cursor-at-pos-p (pos)
-  (loop for ov in (overlays-at pos)
-        thereis (mc-freeze--frozen-cursor-p ov)))
+  (cl-loop for ov in (overlays-at pos)
+           thereis (mc-freeze--frozen-cursor-p ov)))
 
 (defun mc-freeze--add-frozen-cursor (pos)
   (or
@@ -90,15 +90,15 @@ point before freezing fake cursors."
 (defun mc/unfreeze-fake-cursors ()
   "Unfreeze frozen fake cursors."
   (interactive)
-  (loop for ov in mc-freeze--frozen-cursors do
-        (let ((pos (overlay-start ov)))
-          (delete-overlay ov)
-          (and (/= pos (point))
-               (loop for o in (overlays-at pos)
-                     never (mc/fake-cursor-p o))
-               (mc/save-excursion
-                (goto-char pos)
-                (mc/create-fake-cursor-at-point)))))
+  (cl-loop for ov in mc-freeze--frozen-cursors do
+           (let ((pos (overlay-start ov)))
+             (delete-overlay ov)
+             (and (/= pos (point))
+                  (cl-loop for o in (overlays-at pos)
+                           never (mc/fake-cursor-p o))
+                  (mc/save-excursion
+                   (goto-char pos)
+                   (mc/create-fake-cursor-at-point)))))
   (setq mc-freeze--frozen-cursors nil)
   (mc/maybe-multiple-cursors-mode)
   ;; Prevent the fake cursors from moving via mc's post-command-hook

@@ -1,6 +1,6 @@
 ;;; mc-cua.el --- Make multiple-cursors interact with CUA mode.
 
-;; Copyright (c) 2013 Akinori MUSHA
+;; Copyright (c) 2013-2023 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -48,7 +48,8 @@
 
 ;;; Code:
 
-(require 'cl)
+(eval-when-compile
+  (require 'cl-lib))
 (require 'multiple-cursors-core)
 (require 'cua-rect)
 
@@ -77,10 +78,10 @@
                            (setq deactivate-mark nil)))
               (top (car rows))
               (rest (cdr rows)))
-          (loop for row in rest do
-                (mc/save-excursion
-                 (funcall mark-row row)
-                 (mc/create-fake-cursor-at-point)))
+          (cl-loop for row in rest do
+                   (mc/save-excursion
+                    (funcall mark-row row)
+                    (mc/create-fake-cursor-at-point)))
           (funcall mark-row top)
           (mc/maybe-multiple-cursors-mode)))))
 

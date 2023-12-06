@@ -1,6 +1,6 @@
 ;;; mc-remove.el --- Functions to remove cursors in multiple-cursors mode.
 
-;; Copyright (c) 2013-2017 Akinori MUSHA
+;; Copyright (c) 2013-2023 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -44,21 +44,22 @@
 
 ;;; Code:
 
-(require 'cl)
+(eval-when-compile
+  (require 'cl-lib))
 (require 'multiple-cursors-core)
 (require 'mc-cycle-cursors)
 
 ;;;###autoload
 (defun mc/remove-current-cursor ()
-  "Remove the current cursor by replacing the next fake cursor with the real cursor."
+  "Remove the current cursor by replacing the next fake cursor."
   (interactive)
   (let ((next-cursor
          (or (mc/next-fake-cursor-after-point)
              (mc/prev-fake-cursor-before-point)
              (error "This is the only cursor."))))
     (mapc 'mc/remove-fake-cursor
-          (remove-if-not 'mc/fake-cursor-p
-                         (overlays-at (point))))
+          (cl-remove-if-not 'mc/fake-cursor-p
+                            (overlays-at (point))))
     (mc/pop-state-from-overlay next-cursor)))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/remove-current-cursor)
@@ -68,14 +69,14 @@
   "Remove duplicated fake cursors, including ones that overlap the real cursor."
   (interactive)
   (mapc 'mc/remove-fake-cursor
-        (loop with seen = (list (point))
-              for cursor in (mc/all-fake-cursors)
-              for start = (overlay-start cursor)
-              append
-              (if (loop for pos in seen thereis (= pos start))
-                  (list cursor)
-                (setq seen (cons start seen))
-                nil))))
+        (cl-loop with seen = (list (point))
+                 for cursor in (mc/all-fake-cursors)
+                 for start = (overlay-start cursor)
+                 append
+                 (if (cl-loop for pos in seen thereis (= pos start))
+                     (list cursor)
+                   (setq seen (cons start seen))
+                   nil))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/remove-duplicated-cursors)
 
@@ -83,10 +84,10 @@
 (defun mc/remove-cursors-at-bol ()
   "Remove cursors at BOL, either fake or real."
   (interactive)
-  (loop for cursor in (mc/all-fake-cursors)
-        for start = (overlay-start cursor)
-        do (if (save-excursion (goto-char start) (bolp))
-               (mc/remove-fake-cursor cursor)))
+  (cl-loop for cursor in (mc/all-fake-cursors)
+           for start = (overlay-start cursor)
+           do (if (save-excursion (goto-char start) (bolp))
+                  (mc/remove-fake-cursor cursor)))
   (if (bolp)
       (ignore-errors
         (mc/remove-current-cursor))))
@@ -95,10 +96,10 @@
 (defun mc/remove-cursors-at-eol ()
   "Remove cursors at EOL, either fake or real."
   (interactive)
-  (loop for cursor in (mc/all-fake-cursors)
-        for start = (overlay-start cursor)
-        do (if (save-excursion (goto-char start) (eolp))
-               (mc/remove-fake-cursor cursor)))
+  (cl-loop for cursor in (mc/all-fake-cursors)
+           for start = (overlay-start cursor)
+           do (if (save-excursion (goto-char start) (eolp))
+                  (mc/remove-fake-cursor cursor)))
   (if (eolp)
       (ignore-errors
         (mc/remove-current-cursor))))
@@ -109,13 +110,13 @@
 (defun mc/remove-cursors-on-blank-lines ()
   "Remove cursors on blank lines, either fake or real."
   (interactive)
-  (loop for cursor in (mc/all-fake-cursors)
-        for start = (overlay-start cursor)
-        do (if (save-excursion (goto-char start) (and (looking-at "\\s-*$")
-                                                      (looking-back "^\\s-*")))
-               (mc/remove-fake-cursor cursor)))
-  (if (and (looking-at "\\s-*$")
-           (looking-back "^\\s-*"))
+  (cl-loop for cursor in (mc/all-fake-cursors)
+           for start = (overlay-start cursor)
+           do (if (save-excursion (goto-char start) (and (looking-at-p "\\s-*$")
+                                                         (looking-back "^\\s-*" (- (point) 300))))
+                  (mc/remove-fake-cursor cursor)))
+  (if (and (looking-at-p "\\s-*$")
+           (looking-back "^\\s-*" (- (point) 300)))
       (ignore-errors
         (mc/remove-current-cursor))))
 

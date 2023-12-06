@@ -43,7 +43,6 @@
 
 ;;; Code:
 
-(require 'cl)
 (require 'multiple-cursors-core)
 
 ;;;###autoload

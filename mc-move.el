@@ -1,6 +1,6 @@
 ;;; mc-move.el --- Functions to move cursors in multiple-cursors mode.
 
-;; Copyright (c) 2013-2017 Akinori MUSHA
+;; Copyright (c) 2013-2023 Akinori MUSHA
 ;;
 ;; All rights reserved.
 ;;
@@ -43,13 +43,16 @@
 
 ;;; Code:
 
-(require 'cl)
+(eval-when-compile
+  (require 'cl-lib))
 (require 'multiple-cursors-core)
 
 ;;;###autoload
 (defun mc/move-to-column (column)
   "Move every cursor to column COLUMN.
-If COLUMN is omitted, move every fake cursor to the same column as the real cursor."
+
+If COLUMN is omitted, move every fake cursor to the same column
+as the real cursor."
   (interactive "P")
   (let ((current-prefix-arg (if column (prefix-numeric-value column) (current-column))))
     (mc/execute-command-for-all-cursors 'move-to-column)))
@@ -58,8 +61,9 @@ If COLUMN is omitted, move every fake cursor to the same column as the real curs
 
 ;;;###autoload
 (defun mc/compare-chars (&optional arg)
-  "Compare the character at point with that at each fake cursor, and move forward as far as they all match.
-With an optional argument, move backwards by calling `mc/compare-chars-backward'.
+  "Move all cursors forward while the characters at the cursors all match.
+
+With an optional ARG, move backwards by calling `mc/compare-chars-backward'.
 This command pushes the mark before moving cursors."
   (interactive "P")
   (if arg (mc/compare-chars-backward)
@@ -69,14 +73,15 @@ This command pushes the mark before moving cursors."
 
 ;;;###autoload
 (defun mc/compare-chars-forward ()
-  "Compare the character at point with that at each fake cursor, and move forward as far as they all match.
+  "Move all cursors forward while the characters at the cursors all match.
+
 This command pushes the mark before moving cursors."
   (interactive)
   (let (current-prefix-arg)
     (mc/execute-command-for-all-cursors 'push-mark-command)
-    (while (loop for cursor in (mc/all-fake-cursors)
-                 with c = (following-char)
-                 always (char-equal (char-after (overlay-start cursor)) c))
+    (while (cl-loop for cursor in (mc/all-fake-cursors)
+                    with c = (following-char)
+                    always (char-equal (char-after (overlay-start cursor)) c))
       (mc/execute-command-for-all-cursors 'forward-char))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/compare-chars-forward)
@@ -87,9 +92,9 @@ This command pushes the mark before moving cursors."
   (interactive)
   (let (current-prefix-arg)
     (mc/execute-command-for-all-cursors 'push-mark-command)
-    (while (loop for cursor in (mc/all-fake-cursors)
-                 with c = (preceding-char)
-                 always (char-equal (char-before (overlay-start cursor)) c))
+    (while (cl-loop for cursor in (mc/all-fake-cursors)
+                    with c = (preceding-char)
+                    always (char-equal (char-before (overlay-start cursor)) c))
       (mc/execute-command-for-all-cursors 'backward-char))))
 
 (add-to-list 'mc--default-cmds-to-run-once 'mc/compare-chars-backward)
